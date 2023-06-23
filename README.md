@@ -121,7 +121,19 @@ Experiment_Name\
 		Your image tiff files
 	Platemap.xlsx
 ```
-1)	Make sure the platemap file is in the same directory as your image files.
+
+0) The default settings of the program are based on the YOKOGAWA/PerkinElmer ```plate_protocol```, where
+   the image channels and their corresponding florescent dies are:
+```
+self.args.channel_dies = {
+    "C1": "DAPI",  # nucleus
+    "C2": "Concanavalin A",  # cyto
+    "C3": "Syto14",  # nucleoli
+    "C4": "WGA+Phalloidin",  # actin
+    "C5": "MitoTracker",  # mito}
+``` 
+
+1)	Make sure your_platemap_file.xlsx file is in the same directory as your tiff image files.
 You need to make sure that your platemap format follows our empty template ```platemap_template.xlsx``` protocol.
 Make sure to fill out all these sheets properly:
 ```
@@ -136,26 +148,15 @@ Control
 2)	If you are not using the PerkinElmer plate protocol you, or your images format is not 5 channels 
 You need to update the ```sort_key_for_imgs``` function inside the 
 ```cellpaint/cellpaint/steps_single_plate /step0_args.py``` file. So that our cellpaint package knows 
-how to extract the necessary metadata from each individual tiff file inside that image folder which are:
+how to extract the necessary metadata, from each individual tiff file inside that image folder.
+Those metadata keys/values/fields are:
 ```
 folder: The name of the image folder containing your tiff files
 filename: the name of the tiff file which should be passed in as a WindowsPath/PosixPath object 
 if you are using Windows/Linux respectively.  
 well_id: The image filename should contain the well-id of that plate where the image tiff file is taken from.
 fov: The image should contain the fov of that well where the image tiff file is taken from.
-channel: Which die/channel does the image correspond to.
-```
-In the YOKO/PerkinElmer protocol There are 5 channels corresponding to:
-```
-self.args.channel_dies = {
-    "C1": "DAPI",  # nucleus
-    "C2": "Concanavalin A",  # cyto
-    "C3": "Syto14",  # nucleoli
-    "C4": "WGA+Phalloidin",  # actin
-    "C5": "MitoTracker",  # mito}
-```
-
-Example:
+channel: Which die/channel does the image correspond to, for example:
 ```
 elif plate_protocol == "combchem":
     """img filename example:
@@ -168,6 +169,8 @@ elif plate_protocol == "combchem":
     fov = split[2][1]
     channel = split[3][1]
 ```
+
+
 
 3)	Also, if your image folder may contain tiff other than the image files you need to figure out 
 a way to filter them similar to how it is done for perkim-elmer.
