@@ -79,6 +79,39 @@ cmd.exe "/K" path_to_your_miniconda3\Scripts\activate.bat tensors
 ```
 Remember, you can only modify the program if you install it using Option 2).
 
+**Running the program**
+
+After making sure all the necessary adjustments are made.
+Copy main.py file to your desired filepth location.
+Add your plate full filepath and folder name to the pairs variable inside ```cellpaint/cellpaint/main.py``` 
+file. Example:
+```("image_folder_name", "path_to_the_image_folder"),```
+:
+
+Modify ```main.py``` by passing in your own ```experiment_path```, ```experiment_folder``` and your own 
+```args=set_custom_datasets_hyperparameters(args)``` hyperparameters.:
+```
+if __name__ == "__main__":
+    experiment_path = WindowsPath(r"path_to_your_experiment_folder_excluding_the_experiment_folder_itself")
+    experiment_folder = WindowsPath(r"your_experiment_folder")
+    # entry point of the program is creating the necessary args
+    start_time = time.time()
+    args = Args(experiment=experiment_folder, main_path=experiment_path, mode="full").args
+    # args = set_default_datasets_hyperparameters(args)
+    # args = set_custom_datasets_hyperparameters(args)
+    main_worker(args)
+    print(f"program finished analyzing experiment {args.experiment} in {(time.time()-start_time)/3600} hours ... ")
+```
+Also, make sure the platemap excel file is filled-in properly,
+and is in the same directory as ```experiment_path```.
+
+Open an anaconda terminal and run the following commands:
+```
+conda activate tensors
+python main.py
+```
+
+
 **Preparations for running it on a different sample plate than YOKO/PerkimElmer**
 
 (modifications needed to be applied to ```cellpaint/cellpaint/steps_single_plate /step0_args.py```):
@@ -223,35 +256,5 @@ args = set_custom_datasets_hyperparameters(args)
 main_worker(args)
 ```
 
-**Running the program**
 
-After making sure all the necessary adjustments are made.
-Copy main.py file to your desired filepth location.
-Add your plate full filepath and folder name to the pairs variable inside ```cellpaint/cellpaint/main.py``` 
-file. Example:
-```("image_folder_name", "path_to_the_image_folder"),```
-:
-
-Modify ```main.py``` by passing in your own ```experiment_path```, ```experiment_folder``` and your own 
-```args=set_custom_datasets_hyperparameters(args)``` hyperparameters.:
-```
-if __name__ == "__main__":
-    experiment_path = WindowsPath(r"path_to_your_experiment_folder_excluding_the_experiment_folder_itself")
-    experiment_folder = WindowsPath(r"your_experiment_folder")
-    # entry point of the program is creating the necessary args
-    start_time = time.time()
-    args = Args(experiment=experiment_folder, main_path=experiment_path, mode="full").args
-    # args = set_default_datasets_hyperparameters(args)
-    # args = set_custom_datasets_hyperparameters(args)
-    main_worker(args)
-    print(f"program finished analyzing experiment {args.experiment} in {(time.time()-start_time)/3600} hours ... ")
-```
-Also, make sure the platemap excel file is filled-in properly,
-and is in the same directory as ```experiment_path```.
-
-Open an anaconda terminal and run the following commands:
-```
-conda activate tensors
-python main.py
-```
 
