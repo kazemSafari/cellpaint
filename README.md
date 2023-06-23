@@ -18,13 +18,7 @@ It's advantages are:
     cellpose and pycleranto
 3) It then uses a novel method to match the segmentation of nucleus and cytoplasm, then
    uses the those two segmentation masks to segment the nucleoli and mitochondira as well.
-5) Easy and simple interface to run with only four steps:
-   5-1) Preview (Check and decide how happy you are with your segmentation on a few wells!)
-   5-2) Segmentation Step 1 (Segmenting nucleus and cell)
-   5-3) Segmentation Step 2 (Matching nucleus and cell segmentation as well as segmenting nucleoli and mitchondria)
-   5-4) Light-weight Feature extraction: Shape, Intensity, and Texture Features
-   5-5) Calcultes the Wassertein-Distance Map of each biological-well from the DMSO/Vehicle condition.
-    
+5) Easy and simple interface to run
 7) Extremely fast, 10-100X faster than Cellprofiler, by avoiding the need for cloud computing resources
    (Uses pytorch/GPU as well as CPU-Multiprocessing for speedup).
 8) It uses a torch-GPU implementation of the Wassertein Distance Map from each well from the DMSO condition,
@@ -32,7 +26,12 @@ It's advantages are:
    It help you decide on whether your control treatments as well as test treatments have worked.
    You can also use your own hit-calling methods on it Final Wassertein Distance MAP well summary stats.
 
-
+**Image Analysis Steps**
+1) Preview (Check and decide how happy you are with your segmentation on a few wells!)
+2) Segmentation Step 1 (Segmenting nucleus and cell)
+3) Segmentation Step 2 (Matching nucleus and cell segmentation as well as segmenting nucleoli and mitchondria)
+4) Light-weight Feature extraction: Shape, Intensity, and Texture Features
+5) Calcultes the Wassertein-Distance Map of each biological-well from the DMSO/Vehicle condition.
 
 **Installation instructions**
 To install cellpaint python package on a conda virtualenv called tensors:
