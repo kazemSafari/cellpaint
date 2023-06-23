@@ -1,4 +1,4 @@
-**Purpose and Use Case**
+1) **Purpose and Use Case**
 
 The cellpaint package, an alternative for the MIT Ann Corpenter's group [Cellprofiler](https://github.com/CellProfiler/CellProfiler) package,
 and it provide biologists and image analysts with simple analytic platform for phynotipic screening and drug discovery.
@@ -24,14 +24,14 @@ It's advantages are:
    It help you decide on whether your control treatments as well as test treatments have worked.
    You can also use your own hit-calling methods on it Final Wassertein Distance MAP well summary stats.
 
-**[Image Analysis Steps](https://github.com/kazemSafari/cellpaint/blob/master/main.py)**
+2) **[Image Analysis Steps](https://github.com/kazemSafari/cellpaint/blob/master/main.py)**
 1) Preview (Check and decide how happy you are with your segmentation on a few wells!)
 2) Segmentation Step 1 (Segmenting nucleus and cell)
 3) Segmentation Step 2 (Matching nucleus and cell segmentation as well as segmenting nucleoli and mitchondria)
 4) Light-weight Feature extraction: Shape, Intensity, and Texture Features
 5) Calcultes the Wassertein-Distance Map of each biological-well from the DMSO/Vehicle condition.
 
-**Installation instructions**
+3) **Installation instructions**
 
 To install cellpaint python package on a conda virtualenv called tensors:
 1)	Install anacond3/miniconda3 on your windows or linux machine.
@@ -78,7 +78,7 @@ cmd.exe "/K" path_to_your_miniconda3\Scripts\activate.bat tensors
 ```
 Remember, you can only modify the program if you install it using Option 2).
 
-**Necessary Modifications Before running the program**
+4) **Necessary Modifications Before running the program**
 
 1) make sure the platemap excel file is filled-in properly,
 and is in the same directory as your ```experiment_path``` which is the path to your images/experiment folder.
@@ -160,7 +160,7 @@ def set_custom_datasets_hyperparameters(args):
 3) Modify ```main.py``` by setting in your own ```experiment_path```, ```experiment_folder```.
 
 
-**Running the program**
+5) **Running the program**
 
 To run the program, you have two options, "preview" mode which allows you to inspect the segmentation
 steps results closely on a few wells and "full" mode which run the entire pipline from start to finish
@@ -220,11 +220,9 @@ conda activate tensors
 python main.py
 ```
 
+6) **Preparations for running it on a different sample plate than YOKO/PerkimElmer**
 
-
-**Preparations for running it on a different sample plate than YOKO/PerkimElmer**
-
-(modifications needed to be applied to ```cellpaint/cellpaint/steps_single_plate /step0_args.py```):
+(modifications needed to be applied to ```cellpaint/steps_single_plate /step0_args.py```):
 The structure of the directory of your data/images/plate has to be as follows:
 ```
 Experiment_Name\
@@ -259,7 +257,44 @@ Control
 2)	If you are not using the PerkinElmer plate protocol, or your images format is not 5 channels 
 You need to update the ```sort_key_for_imgs``` function inside the 
 ```cellpaint/steps_single_plate /step0_args.py``` file. So that our cellpaint package knows 
-how to extract the necessary metadata, from each individual tiff file inside that image folder.
+how to extract the necessary metadata, from each individual tiff file inside that image folder:
+
+```
+def sort_key_for_imgs(file_path, sort_purpose, plate_protocol):
+    """
+    Get sort key from the img filename.
+    The function is used to sort image filenames for a specific experiment taken with a specific plate_protocol.
+    """
+    # plate_protocol = plate_protocol.lower()
+    if plate_protocol == "greiner" or plate_protocol == "perkinelmer":
+	...
+    elif plate_protocol == "combchem":
+	...
+    elif "cpg0012" in plate_protocol:
+	...
+    elif "cpg0001" in plate_protocol:
+	...
+    else:
+        raise NotImplementedError(f"{plate_protocol} is not implemented yet!!!")
+
+    if sort_purpose == "to_sort_channels":
+        return folder, well_id, fov, channel
+
+    elif sort_purpose == "to_group_channels":
+        # print(folder, well_id, fov)
+        return folder, well_id, fov
+
+    elif sort_purpose == "to_match_it_with_mask_path":
+        return f"{well_id}_{fov}"
+    elif sort_purpose == "to_get_well_id":
+        return well_id
+    elif sort_purpose == "to_get_well_id_and_fov":
+        return well_id, fov
+    else:
+        raise ValueError(f"sort purpose {sort_purpose} does not exist!!!")
+```
+
+
 Those metadata keys/values/fields are:
 ```
 folder: The name of the image folder containing your tiff files
@@ -296,9 +331,9 @@ elif plate_protocol == "myplate_protocol":
     channel = split[...]
 ```
 3)	Also, if your image folder may contain tiff other than the image files you need to figure out 
-a way to filter them similar to how it is done for perkim-elmer.
-You may also need to provide the necessary sorting functions to sort the channels properly,
-depending on how your microscope saves image filenames:
+a way to filter them similar to how it is done for ```perkim-elmer```.
+You may also need to provide the your own necessary sorting functions to sort the channels properly,
+depending on how your microscope saves image filenames. For example, for ```perkim-elmer``` we have:
 ```
 if self.args.plate_protocol.lower() in ["perkinelmer", "greiner"]:
     # sometimes there are other tif files in the experiment folder that are not an image, so we have to
@@ -309,6 +344,14 @@ self.args.img_filepaths = sorted(
     self.args.img_filepaths,
     key=lambda x: sort_key_for_imgs(x, "to_sort_channels", self.args.plate_protocol))
 ```
-
+Therefore, you need to have:
+```
+if self.args.plate_protocol.lower() in ["myplate_protocol",]:
+    self.args.img_filepaths = list(
+        filter(lambda x: my_filter_fn, self.args.img_filepaths))
+self.args.img_filepaths = sorted(
+    self.args.img_filepaths,
+    key=lambda x: sort_key_for_imgs(x, "to_sort_channels", self.args.plate_protocol))
+```
 
 
