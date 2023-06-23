@@ -34,6 +34,7 @@ It's advantages are:
 5) Calcultes the Wassertein-Distance Map of each biological-well from the DMSO/Vehicle condition.
 
 **Installation instructions**
+
 To install cellpaint python package on a conda virtualenv called tensors:
 1)	Install anacond3/miniconda3 on your windows or linux machine.
 2)	Open an anaconda3 terminal:
