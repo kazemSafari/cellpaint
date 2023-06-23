@@ -1,4 +1,5 @@
 **Purpose and Use Case**
+
 The cellpaint package, an alternative for the MIT Ann Corpenter's group cellprofiler package,
 and it provide biologists and image analysts with simple analytic platform for phynotipic screening and drug discovery.
 It takes in a 384 well-plate format set of tiff images, 
