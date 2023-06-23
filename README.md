@@ -281,7 +281,8 @@ elif plate_protocol == "combchem":
     channel = split[3][1]
 ```
 
-Now you can have your own ``plate_protocol```:
+Now you can have your own ```plate_protocol```:
+```
 elif plate_protocol == "myplate_protocol":
     """img filename example:
     .../myimg_with_its_own_wellid_fov_channel_info.tif"""
@@ -291,7 +292,7 @@ elif plate_protocol == "myplate_protocol":
     well_id = split[...]
     fov = split[...]
     channel = split[...]
-
+```
 3)	Also, if your image folder may contain tiff other than the image files you need to figure out 
 a way to filter them similar to how it is done for perkim-elmer.
 You may also need to provide the necessary sorting functions to sort the channels properly,
