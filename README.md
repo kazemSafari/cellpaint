@@ -10,7 +10,7 @@ It's advantages are:
 0) It can with Design of Experiment 
 (Have multiple treatments/dosages/cell-lines/densities).
 1) Simple, easily tunable user-friendly interface for cellular segmentation (Check
-   the [preview.ipynb] notebook.
+   the [preview.ipynb](https://github.com/kazemSafari/cellpaint/blob/master/preview.ipynb) notebook.
    It possible to make both the biologist and the programmer/analysist can be happy,
    less arguments inside your team on who knows more,
    the biologist or the analyst! Neither! Stop arguing!).
