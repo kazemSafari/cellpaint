@@ -15,8 +15,9 @@ It's advantages are:
    less arguments inside your team on who knows more,
    the biologist or the analyst! Neither! Stop arguing!).
 2) It has two GPU-backended options for the initial segmentation of the nucleus and cell:
+   
     [cellpose](https://github.com/MouseLand/cellpose) and [pycleranto](https://github.com/clEsperanto/pyclesperanto_prototype)
-3) It then uses a novel method to match the segmentation of nucleus and cytoplasm, then
+4) It then uses a novel method to match the segmentation of nucleus and cytoplasm, then
    uses the those two segmentation masks to segment the nucleoli and mitochondira as well.
 5) Easy and simple interface to run
 7) Extremely fast, 10-100X faster than [Cellprofiler](https://github.com/CellProfiler/CellProfiler), using standard desktop and not using any cloud computing resources.
