@@ -27,7 +27,7 @@ It's advantages are:
    It help you decide on whether your control treatments as well as test treatments have worked.
    You can also use your own hit-calling methods on it Final Wassertein Distance MAP well summary stats.
 
-**Image Analysis Steps**
+**[Image Analysis Steps](https://github.com/kazemSafari/cellpaint/blob/master/main.py)**
 1) Preview (Check and decide how happy you are with your segmentation on a few wells!)
 2) Segmentation Step 1 (Segmenting nucleus and cell)
 3) Segmentation Step 2 (Matching nucleus and cell segmentation as well as segmenting nucleoli and mitchondria)
