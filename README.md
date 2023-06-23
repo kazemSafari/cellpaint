@@ -7,6 +7,7 @@ using JUMP Consortium Protocol which has 5 channels (C1 / C2 / C3 / C4 / C5) as
 (nuclues / cytoplasm / nucleoli/ actin / mitochondria) painted with florescent dies
 (DAPI / Concanavalin A / Syto14 / WGA+Phalloidin / MitoTracker). 
 It's advantages are:
+
 0) It can with Design of Experiment 
 (Have multiple treatments/dosages/cell-lines/densities).
 1) Simple, easily tunable user-friendly interface for cellular segmentation (Check
