@@ -198,6 +198,25 @@ file. Example:
 Open an anaconda terminal and run the following commands:
 ```
 conda activate tensors
+```
+Modify ```main.py``` by passing in your own ```experiment_path```, ```experiment_folder``` and your own 
+```args=set_custom_datasets_hyperparameters(args)``` hyperparameters.:
+```
+if __name__ == "__main__":
+    experiment_path = WindowsPath(r"path_to_your_experiment_folder_excluding_the_experiment_folder_itself")
+    experiment_folder = WindowsPath(r"your_experiment_folder")
+    # entry point of the program is creating the necessary args
+    start_time = time.time()
+    args = Args(experiment=experiment_folder, main_path=experiment_path, mode="full").args
+    # args = set_default_datasets_hyperparameters(args)
+    # args = set_custom_datasets_hyperparameters(args)
+    main_worker(args)
+    print(f"program finished analyzing experiment {args.experiment} in {(time.time()-start_time)/3600} hours ... ")
+```
+Also, make sure the platemap excel file is filled-in properly,
+and is in the same directory as ```experiment_path```.
+Run the program in a conda terminal using:
+```
 python main.py
 ```
 
