@@ -85,11 +85,66 @@ Copy main.py file to your desired filepth location.
 Add your plate full filepath and folder name to the pairs variable inside ```cellpaint/cellpaint/main.py``` 
 file. Example:
 ```("image_folder_name", "path_to_the_image_folder"),```
-:
 
 Modify ```main.py``` by passing in your own ```experiment_path```, ```experiment_folder``` and your own 
 ```args=set_custom_datasets_hyperparameters(args)``` hyperparameters.:
 ```
+import time
+from pathlib import WindowsPath
+
+from cellpaint.steps_single_plate.step0_args import Args
+from cellpaint.steps_single_plate.step1_segmentation_preview import preview_run_loop
+from cellpaint.steps_single_plate.step2_segmentation_p1 import step2_main_run_loop
+from cellpaint.steps_single_plate.step3_segmentation_p2 import step3_main_run_loop
+from cellpaint.steps_single_plate.step4_feature_extraction import step4_main_run_loop
+from cellpaint.steps_single_plate.step5_distance_map_with_torch_api import WellAggFeatureDistanceMetrics
+
+
+def set_default_datasets_hyperparameters(args):
+	# default values for args based on the BCM/IBT perkim_elmer plate_protocol,
+	# for on 2000x2000 pixel dimenion images taken at 20X magnification.
+	...
+	return args
+
+def set_custom_datasets_hyperparameters(args):
+	# make your own modifications 
+	return args
+
+def main_worker(args):
+    """
+    This program has three modes:
+        Always run main_worker using args.mode == "preview" first.
+
+    1) args.mode="preview":
+        It allows the user to see the result of segmentation
+        quickly on a few set of images. This way they can make
+        sure the hyperparameters of the program are chosen appropriately.
+
+    2) args.mode="full":
+         Runs the main_worker on the entire set of tiff images in the
+         args.main_path / args.experiment / args.img_folder folder.
+         It uses the multiprocessing module in step 3 and 4 for speed-up.
+
+    3) args.mode="test":
+        For developer only, Only if you would like to change the internals of the program
+        It helps with debugging and making sure the logic of the code follows.
+        It does not use the multiprocessing module in for loop.
+    """
+    if args.mode == "preview":
+        preview_run_loop(args, num_wells=2, sample_wellids=None)
+    else:
+        # segmentation of nucleus and cytoplasm
+        step2_main_run_loop(args)
+        # matching nucleus and cytoplasm labels,
+        # and segmenting nucleoli and mitochondria
+        step3_main_run_loop(args)
+        # generates feature matrices as csv files
+        step4_main_run_loop(args)
+        # generates DistanceMaps as xlsx files
+        step5 = WellAggFeatureDistanceMetrics(args)
+        step5.step5_main_run_loop()
+
+
 if __name__ == "__main__":
     experiment_path = WindowsPath(r"path_to_your_experiment_folder_excluding_the_experiment_folder_itself")
     experiment_folder = WindowsPath(r"your_experiment_folder")
