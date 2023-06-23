@@ -19,12 +19,14 @@ It's advantages are:
 3) It then uses a novel method to match the segmentation of nucleus and cytoplasm, then
    uses the those two segmentation masks to segment the nucleoli and mitochondira as well.
 5) Easy and simple interface to run with only four steps:
+   
    	 5-1) Preview (Check and decide how happy you are with your segmentation on a few wells!)
    	 5-2) Segmentation Step 1 (Segmenting nucleus and cell)
    	 5-3) Segmentation Step 2 (Matching nucleus and cell segmentation as well as segmenting
    		nucleoli and mitchondria)
    	5-4) Light-weight Feature extraction: Shape, Intensity, and Texture Features
-	5-5) Calcultes the Wassertein-Distance Map of each biological-well from the DMSO/Vehicle condition. 
+	5-5) Calcultes the Wassertein-Distance Map of each biological-well from the DMSO/Vehicle condition.
+    
 7) Extremely fast, 10-100X faster than Cellprofiler, by avoiding the need for cloud computing resources
    (Uses pytorch/GPU as well as CPU-Multiprocessing for speedup).
 8) It uses a torch-GPU implementation of the Wassertein Distance Map from each well from the DMSO condition,
