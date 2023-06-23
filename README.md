@@ -7,22 +7,22 @@ using JUMP Consortium Protocol which has 5 channels (C1 / C2 / C3 / C4 / C5) as
 (nuclues / cytoplasm / nucleoli/ actin / mitochondria) painted with florescent dies
 (DAPI / Concanavalin A / Syto14 / WGA+Phalloidin / MitoTracker). 
 It's advantages are:
-
-1) It can help with Design of Experiment (AssayPlates can study the effects of multiple treatments/dosages/cell-lines/densities).
-2) Simple, easily tunable user-friendly interface for cellular segmentation (Check
-   the [preview.ipynb](https://github.com/kazemSafari/cellpaint/blob/master/preview.ipynb) notebook.
-   It possible to make both the biologist and the programmer/analysist can both be happy!).
-3) It has two GPU-backended options for the initial segmentation of the nucleus and cell:
-    [cellpose](https://github.com/MouseLand/cellpose) and [pycleranto](https://github.com/clEsperanto/pyclesperanto_prototype)
-4) It then uses a novel method to match the segmentation of nucleus and cytoplasm, then
-   uses the those two segmentation masks to segment the nucleoli and mitochondira as well.
-5) Easy and simple interface to run
-7) Extremely fast, 10-100X faster than [Cellprofiler](https://github.com/CellProfiler/CellProfiler), using standard desktop and not using any cloud computing resources. It takes about 6-9 hours to analyse a full 384-well plate of 2000X2000 pixel images, which is about 17000 images.
-   (Uses pytorch/GPU as well as CPU-Multiprocessing for speedup).
-8) It uses a torch-GPU implementation of the Wassertein Distance Map from each well from the DMSO condition,
-   to get wellwise summary statistics.
-   It help you decide on whether your control treatments as well as test treatments have worked.
-   You can also use your own hit-calling methods on it Final Wassertein Distance MAP well summary stats.
+	
+	1) It can help with Design of Experiment (AssayPlates can study the effects of multiple treatments/dosages/cell-lines/densities).
+	2) Simple, easily tunable user-friendly interface for cellular segmentation (Check
+	   the [preview.ipynb](https://github.com/kazemSafari/cellpaint/blob/master/preview.ipynb) notebook.
+	   It possible to make both the biologist and the programmer/analysist can both be happy!).
+	3) It has two GPU-backended options for the initial segmentation of the nucleus and cell:
+	    [cellpose](https://github.com/MouseLand/cellpose) and [pycleranto](https://github.com/clEsperanto/pyclesperanto_prototype)
+	4) It then uses a novel method to match the segmentation of nucleus and cytoplasm, then
+	   uses the those two segmentation masks to segment the nucleoli and mitochondira as well.
+	5) Easy and simple interface to run
+	7) Extremely fast, 10-100X faster than [Cellprofiler](https://github.com/CellProfiler/CellProfiler), using standard desktop and not using any cloud computing resources. It takes about 6-9 hours to analyse a full 384-well plate of 2000X2000 pixel images, which is about 17000 images.
+	   (Uses pytorch/GPU as well as CPU-Multiprocessing for speedup).
+	8) It uses a torch-GPU implementation of the Wassertein Distance Map from each well from the DMSO condition,
+	   to get wellwise summary statistics.
+	   It help you decide on whether your control treatments as well as test treatments have worked.
+	   You can also use your own hit-calling methods on it Final Wassertein Distance MAP well summary stats.
 
 
 2) **[Image Analysis Steps](https://github.com/kazemSafari/cellpaint/blob/master/main.py)**
