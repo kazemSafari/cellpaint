@@ -269,10 +269,11 @@ well_id: The image filename should contain the well-id of that plate where the i
 fov: The image should contain the fov of that well where the image tiff file is taken from.
 channel: Which die/channel does the image correspond to, for example:
 ```
+
+For example, if using ```plate_protocol == "combchem"```:
+```
 elif plate_protocol == "combchem":
-    """img filename example:
-    .../P000025-combchem-v3-U2OS-24h-L1-copy1/
-    P000025-combchem-v3-U2OS-24h-L1-copy1_B02_s5_w3C00578CF-AD4A-4A29-88AE-D2A2024F9A92.tif"""
+    """img filename example: .../P000025-combchem-v3-U2OS-24h-L1-copy1/P000025-combchem-v3-U2OS-24h-L1-copy1_B02_s5_w3C00578CF-AD4A-4A29-88AE-D2A2024F9A92.tif"""
     folder = file_path.parents[1].stem
     filename = file_path.stem
     split = filename.split("_")
@@ -282,6 +283,7 @@ elif plate_protocol == "combchem":
 ```
 
 Now you can have your own ```plate_protocol```:
+
 ```
 elif plate_protocol == "myplate_protocol":
     """img filename example:
