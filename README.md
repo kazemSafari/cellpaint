@@ -1,3 +1,38 @@
+**Purpose and Use Case**
+The cellpaint package, an alternative for the MIT Ann Corpenter's group cellprofiler package,
+and it provide biologists and image analysts with simple analytic platform for phynotipic screening and drug discovery.
+It takes in a 384 well-plate format set of tiff images, 
+using JUMP Consortium Protocol which has 5 channels (C1 / C2 / C3 / C4 / C5) as
+(nuclues / cytoplasm / nucleoli/ actin / mitochondria) painted with florescent dies
+(DAPI / Concanavalin A / Syto14 / WGA+Phalloidin / MitoTracker). 
+It's advantages are:
+0) It can with Design of Experiment 
+(Have multiple treatments/dosages/cell-lines/densities).
+1) Simple, easily tunable user-friendly interface for cellular segmentation (Check
+   the [preview.ipynb] notebook.
+   It possible to make both the biologist and the programmer/analysist can be happy,
+   less arguments inside your team on who knows more,
+   the biologist or the analyst! Neither! Stop arguing!).
+2) It has two GPU-backended options for the initial segmentation of the nucleus and cell:
+    cellpose and pycleranto
+3) It then uses a novel method to match the segmentation of nucleus and cytoplasm, then
+   uses the those two segmentation masks to segment the nucleoli and mitochondira as well.
+5) Easy and simple interface to run with only four steps:
+   	 5-1) Preview (Check and decide how happy you are with your segmentation on a few wells!)
+   	 5-2) Segmentation Step 1 (Segmenting nucleus and cell)
+   	 5-3) Segmentation Step 2 (Matching nucleus and cell segmentation as well as segmenting
+   		nucleoli and mitchondria)
+   	5-4) Light-weight Feature extraction: Shape, Intensity, and Texture Features
+	5-5) Calcultes the Wassertein-Distance Map of each biological-well from the DMSO/Vehicle condition. 
+7) Extremely fast, 10-100X faster than Cellprofiler, by avoiding the need for cloud computing resources
+   (Uses pytorch/GPU as well as CPU-Multiprocessing for speedup).
+8) It uses a torch-GPU implementation of the Wassertein Distance Map from each well from the DMSO condition,
+   to get wellwise summary statistics.
+   It help you decide on whether your control treatments as well as test treatments have worked.
+   You can also use your own hit-calling methods on it Final Wassertein Distance MAP well summary stats.
+
+
+
 **Installation instructions**
 To install cellpaint python package on a conda virtualenv called tensors:
 1)	Install anacond3/miniconda3 on your windows or linux machine.
