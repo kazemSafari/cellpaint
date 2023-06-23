@@ -80,10 +80,10 @@ Remember, you can only modify the program if you install it using Option 2).
 
 **Necessary Modifications Before running the program**
 
-First, make sure the platemap excel file is filled-in properly,
+1) make sure the platemap excel file is filled-in properly,
 and is in the same directory as your ```experiment_path``` which is the path to your images/experiment folder.
 
-Then modify the ```args``` python variable. 
+2) Then modify the ```args``` python variable. 
 The ```args``` variable is a namespace python object that holds all the user input/hyperparamter information. 
 To learn more about its available keys/fields/options go to ```cellpaint/steps_single_plate/step0_args.py```
 After making sure all the necessary adjustments are made to the ```args``` Namespace, and your also satisfied
@@ -157,7 +157,7 @@ def set_custom_datasets_hyperparameters(args):
     args.w5_local_rescale_intensity_ub = 99.9
     return args
 ```
-Modify ```main.py``` by setting in your own ```experiment_path```, ```experiment_folder```.
+3) Modify ```main.py``` by setting in your own ```experiment_path```, ```experiment_folder```.
 
 
 **Running the program**
@@ -256,9 +256,9 @@ Other
 Anchor
 Control
 ```
-2)	If you are not using the PerkinElmer plate protocol you, or your images format is not 5 channels 
+2)	If you are not using the PerkinElmer plate protocol, or your images format is not 5 channels 
 You need to update the ```sort_key_for_imgs``` function inside the 
-```cellpaint/cellpaint/steps_single_plate /step0_args.py``` file. So that our cellpaint package knows 
+```cellpaint/steps_single_plate /step0_args.py``` file. So that our cellpaint package knows 
 how to extract the necessary metadata, from each individual tiff file inside that image folder.
 Those metadata keys/values/fields are:
 ```
@@ -281,6 +281,17 @@ elif plate_protocol == "combchem":
     channel = split[3][1]
 ```
 
+Now you can have your own ``plate_protocol```:
+elif plate_protocol == "myplate_protocol":
+    """img filename example:
+    .../myimg_with_its_own_wellid_fov_channel_info.tif"""
+    folder = file_path.parents[1].stem
+    filename = file_path.stem
+    split = filename.split("_")
+    well_id = split[...]
+    fov = split[...]
+    channel = split[...]
+
 3)	Also, if your image folder may contain tiff other than the image files you need to figure out 
 a way to filter them similar to how it is done for perkim-elmer.
 You may also need to provide the necessary sorting functions to sort the channels properly,
@@ -294,26 +305,6 @@ if self.args.plate_protocol.lower() in ["perkinelmer", "greiner"]:
 self.args.img_filepaths = sorted(
     self.args.img_filepaths,
     key=lambda x: sort_key_for_imgs(x, "to_sort_channels", self.args.plate_protocol))
-```
-
-**Modifying the program**
-
-1)	Add your plate full filepath and folder name to the pairs variable inside 
-```cellpaint/cellpaint/main.py``` file. Example:
-```("image_folder_a", "path_to_image_folder_a"),```
- 
-2)	Choose your hyperparameters for segmentation after playing around with them in
-```cellpaint/cellpaint/steps_single_plate /preview.ipynb```. 
-After choosing the propriate ones, pass them in to the Args class inside the ```cellpaint/cellpaint/main.py``` file. 
-You can create a custom function for it, similar to ```set_default_datasets_hyperparameters```.
-After, defining your own ```set_custom_datasets_hyperparameters``` 
-function or whatever you call, replace the line ```set_default_datasets_hyperparameters(args)``` 
-below with your own custom function.
-```
-args = Args(experiment=exp_fold, main_path=main_path, mode="full").args
-# args = set_default_datasets_hyperparameters(args)
-args = set_custom_datasets_hyperparameters(args)
-main_worker(args)
 ```
 
 
