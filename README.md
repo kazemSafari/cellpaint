@@ -78,38 +78,94 @@ cmd.exe "/K" path_to_your_miniconda3\Scripts\activate.bat tensors
 ```
 Remember, you can only modify the program if you install it using Option 2).
 
-**Running the program**
+**Necessary Modifications Before running the program**
 
-After making sure all the necessary adjustments are made.
-Copy main.py file to your desired filepth location.
-Add your plate full filepath and folder name to the pairs variable inside ```cellpaint/cellpaint/main.py``` 
-file. Example:
-```("image_folder_name", "path_to_the_image_folder"),```
+First, make sure the platemap excel file is filled-in properly,
+and is in the same directory as your ```experiment_path``` which is the path to your images/experiment folder.
 
-Modify ```main.py``` by passing in your own ```experiment_path```, ```experiment_folder``` and your own 
-```args=set_custom_datasets_hyperparameters(args)``` hyperparameters.:
+Then modify the ```args``` python variable. 
+The ```args``` variable is a namespace python object that holds all the user input/hyperparamter information. 
+To learn more about its available keys/fields/options go to ```cellpaint/steps_single_plate/step0_args.py```
+After making sure all the necessary adjustments are made to the ```args``` Namespace, and your also satisfied
+with segmentation on a few images using ```preview.ipynb```.
+Copy your own ```set_custom_datasets_hyperparameters``` into ```main.py```:
 ```
-import time
-from pathlib import WindowsPath
-
-from cellpaint.steps_single_plate.step0_args import Args
-from cellpaint.steps_single_plate.step1_segmentation_preview import preview_run_loop
-from cellpaint.steps_single_plate.step2_segmentation_p1 import step2_main_run_loop
-from cellpaint.steps_single_plate.step3_segmentation_p2 import step3_main_run_loop
-from cellpaint.steps_single_plate.step4_feature_extraction import step4_main_run_loop
-from cellpaint.steps_single_plate.step5_distance_map_with_torch_api import WellAggFeatureDistanceMetrics
-
 
 def set_default_datasets_hyperparameters(args):
 	# default values for args based on the BCM/IBT perkim_elmer plate_protocol,
 	# for on 2000x2000 pixel dimenion images taken at 20X magnification.
 	...
 	return args
-
 def set_custom_datasets_hyperparameters(args):
-	# make your own modifications 
-	return args
+    # change the  value of each args.sth according to your plate and needs
+    ##############################################################################
+    # intensity rescaling hyperparameters
+    args.w1_intensity_bounds = (5, 99.95)
+    args.w2_intensity_bounds = (5, 99.95)
+    args.w3_intensity_bounds = (5, 99.95)
+    args.w4_intensity_bounds = (5, 99.95)
+    args.w5_intensity_bounds = (5, 99.95)
+    ##########################################################################
+    # background correction hyperparameters
+    # Set args.bg_sub to True first,
+    # if you decide to do background subtraction.
+    args.bg_sub = False
+    args.w1_bg_rad = 50
+    args.w2_bg_rad = 100
+    args.w3_bg_rad = 50
+    args.w4_bg_rad = 100
+    args.w5_bg_rad = 100
+    #######################################################################
+    # image channels order/index 
+    # defined during data acquisition set by the investigator/microscope
+    args.nucleus_idx = 0
+    args.cyto_idx = 1
+    args.nucleoli_idx = 2
+    args.actin_idx = 3
+    args.mito_idx = 4
+    #######################################################################
+    # hyperparameters/constants used in Cellpaint Step 2
+    #options for args.step2_segmentation_algorithm are:
+        # 1) "w1=cellpose_w2=cellpose"
+        # 2) "w1=pycle_w2=pycle"
+        # 3) "w1=cellpose_w2=pycle"
+        # 4) "w1=pycle_w2=cellpose"
+    args.step2_segmentation_algorithm = "w1=cellpose_w2=cellpose"
+    args.cellpose_nucleus_diam = 100
+    args.cellpose_cyto_diam = 100
+    args.cellpose_batch_size = 64
+    args.cellpose_model_type = "cyto2"
+    # define the minimum size of segmented objects in each channel
+    args.w1_min_size = 600
+    args.w2_min_size = 700
+    args.w3_min_size = 40
+    args.w5_min_size = 200
+    #######################################################
+    # hyperparameters/constants used in Cellpaint Step 3
+    ############################################
+    # args.multi_nucleus_dist_thresh decides 
+    # whether to break down a multi-nucleus cyto mask,
+    # into individual cyto masks,
+    # based on avg-pairwise distance of all the nucleus
+    # inside that cytoplasm
+    args.multi_nucleus_dist_thresh = 40
+    #######################################
+    args.min_nucleoli_size_multiplier = .005
+    args.max_nucleoli_size_multiplier = .3
+    args.nucleoli_bd_area_to_nucleoli_area_threshold = .2
+    args.w3_local_rescale_intensity_ub = 99.2
+    args.w5_local_rescale_intensity_ub = 99.9
+    return args
+```
+Modify ```main.py``` by setting in your own ```experiment_path```, ```experiment_folder```.
 
+
+**Running the program**
+
+To run the program, you have two options, "preview" mode which allows you to inspect the segmentation
+steps results closely on a few wells and "full" mode which run the entire pipline from start to finish
+and should take about 8-10 hours to finish on a full 384-wellplate with 9 field of views taken from each well:
+```
 def main_worker(args):
     """
     This program has three modes:
@@ -120,17 +176,18 @@ def main_worker(args):
         quickly on a few set of images. This way they can make
         sure the hyperparameters of the program are chosen appropriately.
 
-    2) args.mode="full":
-         Runs the main_worker on the entire set of tiff images in the
-         args.main_path / args.experiment / args.img_folder folder.
-         It uses the multiprocessing module in step 3 and 4 for speed-up.
-
-    3) args.mode="test":
+    2) args.mode="test":
         For developer only, Only if you would like to change the internals of the program
         It helps with debugging and making sure the logic of the code follows.
         It does not use the multiprocessing module in for loop.
+
+    3) args.mode="full":
+         Runs the main_worker on the entire set of tiff images in the
+         args.main_path / args.experiment / args.img_folder folder.
+         It uses the multiprocessing module in step 3 and 4 for speed-up.
     """
     if args.mode == "preview":
+	# choose either a few wells, or pass your own sample_wellids as a list
         preview_run_loop(args, num_wells=2, sample_wellids=None)
     else:
         # segmentation of nucleus and cytoplasm
@@ -144,26 +201,25 @@ def main_worker(args):
         step5 = WellAggFeatureDistanceMetrics(args)
         step5.step5_main_run_loop()
 
-
 if __name__ == "__main__":
     experiment_path = WindowsPath(r"path_to_your_experiment_folder_excluding_the_experiment_folder_itself")
     experiment_folder = WindowsPath(r"your_experiment_folder")
     # entry point of the program is creating the necessary args
     start_time = time.time()
-    args = Args(experiment=experiment_folder, main_path=experiment_path, mode="full").args
+    args = Args(experiment=experiment_folder, main_path=experiment_path, mode="full").args  # mode="preview"
     # args = set_default_datasets_hyperparameters(args)
-    # args = set_custom_datasets_hyperparameters(args)
+    args = set_custom_datasets_hyperparameters(args)
     main_worker(args)
     print(f"program finished analyzing experiment {args.experiment} in {(time.time()-start_time)/3600} hours ... ")
 ```
-Also, make sure the platemap excel file is filled-in properly,
-and is in the same directory as ```experiment_path```.
 
-Open an anaconda terminal and run the following commands:
+
+Finally, open an anaconda terminal and run the following commands:
 ```
 conda activate tensors
 python main.py
 ```
+
 
 
 **Preparations for running it on a different sample plate than YOKO/PerkimElmer**
@@ -225,8 +281,6 @@ elif plate_protocol == "combchem":
     channel = split[3][1]
 ```
 
-
-
 3)	Also, if your image folder may contain tiff other than the image files you need to figure out 
 a way to filter them similar to how it is done for perkim-elmer.
 You may also need to provide the necessary sorting functions to sort the channels properly,
@@ -249,58 +303,7 @@ self.args.img_filepaths = sorted(
 ```("image_folder_a", "path_to_image_folder_a"),```
  
 2)	Choose your hyperparameters for segmentation after playing around with them in
-```cellpaint/cellpaint/steps_single_plate /preview.ipynb```. Those hyperparamters are as follows:
-2-1) The index ```(0, 1, 2, 3, 4, 5 in YOKO/PerkinElmer)``` of each channel in the 
-images as well as the number of fov taken per well in the plate:
-```
-self.args.nucleus_idx = nucleus_idx
-self.args.cyto_idx = cyto_idx
-self.args.nucleoli_idx = nucleoli_idx
-self.args.actin_idx = actin_idx
-self.args.mito_idx = mito_idx
-self.args.n_fovs_per_well = n_fovs_per_well
-```
-2-2) Rescale intensity lower and upper bounds for each channel:
-```
-self.args.rescale_intensity_bounds = {
-    "w1": w1_intensity_bounds,
-    "w2": w2_intensity_bounds,
-    "w3": w3_intensity_bounds,
-    "w4": w4_intensity_bounds,
-    "w5": w5_intensity_bounds,}
-```
-2-3) Whether to choose background subtraction and the radius of background subtraction ball for each channel:
-```
-self.args.bg_sub = False
-w1_bg_rad, w2_bg_rad, w3_bg_rad, w4_bg_rad, w5_bg_rad
-```
-2-4) Cellpose and Thresholding segmentation parameters, which are needed to be adjusted depending on the cell-line:
-
-**Cellpaint Step 2) that can be tuned to the plate and image dimensions**
-```
-self.args.cellpose_nucleus_diam = cellpose_nucleus_diam
-self.args.cellpose_cyto_diam = cellpose_cyto_diam
-self.args.cellpose_batch_size = cellpose_batch_size
-self.args.cellpose_model_type = cellpose_model_type
-self.args.min_sizes = {
-    "w1": w1_min_size,
-    "w2": w2_min_size,
-    "w3": w3_min_size,
-    "w5": w5_min_size,}
-```
-
-**Cellpaint Step 3) argumnets that can be tuned to the plate**
-```
-# w2/cyto hyperparameters
-self.args.multi_nucleus_dist_thresh = multi_nucleus_dist_thresh
-# w3/nucleoli segmentation hyperparameters
-self.args.min_nucleoli_size_multiplier = min_nucleoli_size_multiplier
-self.args.max_nucleoli_size_multiplier = max_nucleoli_size_multiplier
-self.args.nucleoli_bd_area_to_nucleoli_area_threshold = nucleoli_bd_area_to_nucleoli_area_threshold
-self.args.w3_local_rescale_intensity_ub = w3_local_rescale_intensity_ub
-# w5/cyto segmentation hyperparameters
-self.args.w5_local_rescale_intensity_ub = w5_local_rescale_intensity_ub
-```
+```cellpaint/cellpaint/steps_single_plate /preview.ipynb```. 
 After choosing the propriate ones, pass them in to the Args class inside the ```cellpaint/cellpaint/main.py``` file. 
 You can create a custom function for it, similar to ```set_default_datasets_hyperparameters```.
 After, defining your own ```set_custom_datasets_hyperparameters``` 
