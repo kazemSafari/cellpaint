@@ -230,10 +230,8 @@ Copy main.py file to your desired filepth location.
 Add your plate full filepath and folder name to the pairs variable inside ```cellpaint/cellpaint/main.py``` 
 file. Example:
 ```("image_folder_name", "path_to_the_image_folder"),```
-Open an anaconda terminal and run the following commands:
-```
-conda activate tensors
-```
+:
+
 Modify ```main.py``` by passing in your own ```experiment_path```, ```experiment_folder``` and your own 
 ```args=set_custom_datasets_hyperparameters(args)``` hyperparameters.:
 ```
@@ -250,8 +248,10 @@ if __name__ == "__main__":
 ```
 Also, make sure the platemap excel file is filled-in properly,
 and is in the same directory as ```experiment_path```.
-Run the program in a conda terminal using:
+
+Open an anaconda terminal and run the following commands:
 ```
+conda activate tensors
 python main.py
 ```
 
