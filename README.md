@@ -19,7 +19,7 @@ It's advantages are:
 4) It then uses a novel method to match the segmentation of nucleus and cytoplasm, then
    uses the those two segmentation masks to segment the nucleoli and mitochondira as well.
 5) Easy and simple interface to run
-7) Extremely fast, 10-100X faster than [Cellprofiler](https://github.com/CellProfiler/CellProfiler), using standard desktop and not using any cloud computing resources.
+7) Extremely fast, 10-100X faster than [Cellprofiler](https://github.com/CellProfiler/CellProfiler), using standard desktop and not using any cloud computing resources. It takes about 6-9 hours to analyse a full 384-well plate of 2000X2000 pixel images, which is about 17000 images.
    (Uses pytorch/GPU as well as CPU-Multiprocessing for speedup).
 8) It uses a torch-GPU implementation of the Wassertein Distance Map from each well from the DMSO condition,
    to get wellwise summary statistics.
