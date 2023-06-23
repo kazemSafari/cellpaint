@@ -1,6 +1,6 @@
 **Purpose and Use Case**
 
-The cellpaint package, an alternative for the MIT Ann Corpenter's group cellprofiler package,
+The cellpaint package, an alternative for the MIT Ann Corpenter's group [Cellprofiler](https://github.com/CellProfiler/CellProfiler) package,
 and it provide biologists and image analysts with simple analytic platform for phynotipic screening and drug discovery.
 It takes in a 384 well-plate format set of tiff images, 
 using JUMP Consortium Protocol which has 5 channels (C1 / C2 / C3 / C4 / C5) as
@@ -15,11 +15,11 @@ It's advantages are:
    less arguments inside your team on who knows more,
    the biologist or the analyst! Neither! Stop arguing!).
 2) It has two GPU-backended options for the initial segmentation of the nucleus and cell:
-    cellpose and pycleranto
+    [cellpose](https://github.com/MouseLand/cellpose) and [pycleranto](https://github.com/clEsperanto/pyclesperanto_prototype)
 3) It then uses a novel method to match the segmentation of nucleus and cytoplasm, then
    uses the those two segmentation masks to segment the nucleoli and mitochondira as well.
 5) Easy and simple interface to run
-7) Extremely fast, 10-100X faster than Cellprofiler, by avoiding the need for cloud computing resources
+7) Extremely fast, 10-100X faster than [Cellprofiler](https://github.com/CellProfiler/CellProfiler), using standard desktop and not using any cloud computing resources.
    (Uses pytorch/GPU as well as CPU-Multiprocessing for speedup).
 8) It uses a torch-GPU implementation of the Wassertein Distance Map from each well from the DMSO condition,
    to get wellwise summary statistics.
