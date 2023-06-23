@@ -13,7 +13,6 @@ import torch
 import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
 from cellpaint.steps_single_plate.step0_args import Args
-
 import matplotlib.pyplot as plt
 
 """
@@ -37,29 +36,12 @@ But the hope is to generalize this API well enough to capture all kinds of scena
 
 
 # For ease of understanding, reading, implementation, and etc it is best to write a separate torch class for
-each case, step4 quality control, step5-1 treatment distance map from anchor, step5-2 cell-line distance map from
-anchor.
+each case, step5 quality control, step5-1 treatment distance map from anchor.
 
-Cellpaint Step 4:
-    It needs calculate the distmap per (density, cell-line, treatment, dosage) quartet where the treatment
+Cellpaint Step 5:
+    It calculates the distmap, the ROC-Curve, ROC-Derivative-Curve, ROC-AUC, and ROC-Derivative-AUC,
+    per (density, cell-line, treatment, dosage) quartet where the treatment
     belongs to control treatments. The anchor treatment will depend on the quartet.
-    
-Cellpaint Step 5-1:
-    It needs calculate the distmap per (density, cell-line) pair. 
-    The anchor treatment must be set by the biologist in the platemap in advance.
-    
-Cellpaint Step 5-2:
-    It needs calculate the distmap where the anchor treatment must belong to control treatments. 
-    The anchor (cell-line, density) pair must be set by the biologist in the platemap in advance.
-    
-Cellpaint Step 5-3:
-    It needs calculate the ROC-Curve, ROC-Derivative-Curve, ROC-AUC, and ROC-Derivative-AUC 
-    per (density, cell-line, treatment, dosage) value.
-    
-Cellpaint Step 5-4:
-    It needs calculate the ROC-Curve, ROC-Derivative-Curve, ROC-AUC, and ROC-Derivative-AUC 
-    per (density, cell-line) value for the anchor treatment. The anchor treatment as well as 
-    the anchor (density, cell-line) pair value must be set by the biologist in the platemap in advance.
 """
 
 
@@ -174,13 +156,13 @@ class WellAggFeaturesDataset(TensorDataset):
     # n_fovs_per_well=9
     """
     Getting measurement array and saving as dataframe steps:
-    1) Get features groups based on the well-id column
-    2) Get the well-id keys and sort them
-    3) Extract the desired measurement from each well, using torch api
-    4) Reorder the features dataframe the way you desire. (controls first!!!)
-    5) Find the index of each well-id key in the ordered features
-    6) Evaluate the measurements on those indices
-    7) Concatenate and save as a dataframe
+        1) Get features groups based on the well-id column
+        2) Get the well-id keys and sort them
+        3) Extract the desired measurement from each well, using torch api
+        4) Reorder the features dataframe the way you desire. (controls first!!!)
+        5) Find the index of each well-id key in the ordered features
+        6) Evaluate the measurements on those indices
+        7) Concatenate and save as a dataframe
     """
     meta_cols = ["exp-id", "density", "cell-line", "treatment", "dosage", "other"]
 
@@ -193,6 +175,10 @@ class WellAggFeaturesDataset(TensorDataset):
         # get metadata value for each well
         # preserving the original order of the group elements with sort=False,
         self.meta_data = self.features.groupby(self.grp_col, sort=False)[self.meta_cols].first().reset_index()
+        self.cell_counts = self.features[[self.grp_col, self.meta_cols[0]]].groupby(
+            self.grp_col, sort=False).count().reset_index()
+        self.cell_counts = self.cell_counts.rename(columns={self.meta_cols[0]: "cell-count"})["cell-count"]
+        self.meta_data = pd.concat((self.meta_data, self.cell_counts), axis=1)
         self.transform = transform
 
     def __getitem__(self, grp_idx):
@@ -571,17 +557,3 @@ class WellAggFeatureDistanceMetrics:
             scale[constant_mask] = 1.0
             return scale
 
-
-def main():
-    camii_server1 = r"P:\tmp\MBolt\Cellpainting\Cellpainting-Flavonoid"
-    camii_server2 = r"P:\tmp\MBolt\Cellpainting\Cellpainting-Seema"
-    plate_id = "20230411-CP-MBolt-FlavScreen-UMUC3-1-3_20230412_190700"
-
-    exp_fold, main_path = (plate_id, camii_server1)
-    args = Args(experiment=exp_fold, main_path=main_path, ).args
-    wellagg = WellAggFeatureDistanceMetrics(args)
-    wellagg.step5_main_run_loop()
-
-
-if __name__ == "__main__":
-    main()
