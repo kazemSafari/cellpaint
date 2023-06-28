@@ -334,8 +334,10 @@ class WellAggFeatureDistanceMetrics:
 
         self.min_well_cell_count = self.args.min_fov_cell_count * self.args.n_fovs_per_well // 3
         self.features, self.cell_count_wellwise, self.start_index = self.load_and_preprocess_features()
+
         self.meta_cols = self.features.columns[:self.start_index]
         self.feat_cols = self.features.columns[self.start_index:]
+        print(f"metadata columns: {list(self.meta_cols)}")
 
         # sort the features dataframe properly and move control treatments to the top
         self.features = self.sort_rows_fn(self.features)
@@ -406,10 +408,16 @@ class WellAggFeatureDistanceMetrics:
         # # # do hit-calling here!!!
 
     def get_anchor_features(self, features):
-        anchor_cond = (features["density"] == self.args.anchor_density) & \
-                      (features["cell-line"] == self.args.anchor_cellline) & \
-                      (features["treatment"] == self.args.anchor_treatment) & \
-                      (features["dosage"] == self.args.anchor_dosage)
+        cond1 = (features["density"] == self.args.anchor_density)
+        cond2 = (features["cell-line"] == self.args.anchor_cellline)
+        cond3 = (features["treatment"] == self.args.anchor_treatment)
+        cond4 = (features["dosage"] == self.args.anchor_dosage)
+
+        # print("density: ", np.sum(cond1), features["density"].dtype, type(self.args.anchor_density))
+        # print("cell-line: ", np.sum(cond2), features["cell-line"].dtype, type(self.args.anchor_cellline))
+        # print("treatment: ", np.sum(cond3), features["treatment"].dtype, type(self.args.anchor_treatment))
+        # print("dosage: ", np.sum(cond4), features["dosage"].dtype, type(self.args.anchor_dosage))
+        anchor_cond = cond1 & cond2 & cond3 & cond4
         return features.loc[anchor_cond]
 
     def get_controls(self, features):
@@ -495,10 +503,19 @@ class WellAggFeatureDistanceMetrics:
             axis=1)
         # removing Nans
         features.dropna(axis=0, inplace=True)
+        # features.dropna(axis=1, inplace=True)
         #########################################################
         # If I changed the name of the experiment folder after feature extraction
         if "exp-id" in list(features.columns):
             features["exp-id"] = self.load_path.parents[0].stem
+        ###############################################################
+        # Correct and match dtype of features, anchors, and controls
+        # (both cell-line and treatment columns have to be strings!!!)
+        features["treatment"] = features["treatment"].astype("str")
+        features["cell-line"] = features["cell-line"].astype("str")
+        self.args.anchor_treatment = str(self.args.anchor_treatment)
+        self.args.anchor_cellline = str(self.args.anchor_cellline)
+        self.args.control_treatments = [str(it) for it in self.args.control_treatments]
         ##############################################################################################################
         # remove wells with not enough cells
         #########################################################################
@@ -515,7 +532,7 @@ class WellAggFeatureDistanceMetrics:
         start_index_feat_cols = metadata_features.shape[1]
         size_mb = np.round(sys.getsizeof(features) / 1024 / 1024, 2)
         print(f"loading took  {time.time()-start_time:.4f}  seconds ....")
-        print(f"features size in MB={size_mb}  shape={features.shape}")
+        print(f"features size in MB={size_mb}  shape={features.shape}=(cell-count, num-feature-columns)")
         return features, cell_count_wellwise, start_index_feat_cols
 
     def normalize_arr(self, arr):
