@@ -276,6 +276,7 @@ class Args(object):
             # hyperparameters/constants used in Cellpaint Step 5
             min_fov_cell_count=100,
             distmap_batch_size=64,
+            ######################################################################
     ):
         """
             experiment:
@@ -395,16 +396,17 @@ class Args(object):
             else:
                 raise NotImplementedError("")
 
-        if self.args.plate_protocol.lower() in ["perkinelmer", "greiner"]:
-            # sometimes there are other tif files in the experiment folder that are not an image, so we have to
-            # remove them from img_paths, so that they do not mess-up the analysis.
-            self.args.img_filepaths = list(
-                filter(lambda x: x.stem.split("_")[-1][0:5] == "T0001", self.args.img_filepaths))
-        self.args.img_filepaths = sorted(
-            self.args.img_filepaths,
-            key=lambda x: sort_key_for_imgs(x, "to_sort_channels", self.args.plate_protocol))
-        self.args.img_filename_keys, self.args.img_channels_filepaths, self.args.N = get_img_channel_groups(self.args)
-        self.args.height, self.args.width = tifffile.imread(self.args.img_filepaths[0]).shape
+            if self.args.plate_protocol.lower() in ["perkinelmer", "greiner"]:
+                # sometimes there are other tif files in the experiment folder that are not an image, so we have to
+                # remove them from img_paths, so that they do not mess-up the analysis.
+                self.args.img_filepaths = list(
+                    filter(lambda x: x.stem.split("_")[-1][0:5] == "T0001", self.args.img_filepaths))
+            self.args.img_filepaths = sorted(
+                self.args.img_filepaths,
+                key=lambda x: sort_key_for_imgs(x, "to_sort_channels", self.args.plate_protocol))
+            self.args.img_filename_keys, self.args.img_channels_filepaths, self.args.N = \
+                get_img_channel_groups(self.args)
+            self.args.height, self.args.width = tifffile.imread(self.args.img_filepaths[0]).shape
 
         self.args.platemap_filepath = list((self.args.main_path / self.args.experiment).rglob("platemap*.xlsx"))[0]
 
