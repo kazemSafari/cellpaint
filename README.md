@@ -7,6 +7,7 @@ using JUMP Consortium Protocol which has 5 channels (C1 / C2 / C3 / C4 / C5) as
 (nuclues / cytoplasm / nucleoli/ actin / mitochondria) painted with florescent dies
 (DAPI / Concanavalin A / Syto14 / WGA+Phalloidin / MitoTracker). 
 It's advantages are:
+```
 	1) It can help with Design of Experiment (AssayPlates can study the effects of multiple treatments/dosages/cell-lines/densities).
 	2) Simple, easily tunable user-friendly interface for cellular segmentation (Check
 	   the [preview.ipynb](https://github.com/kazemSafari/cellpaint/blob/master/preview.ipynb) notebook.
@@ -22,7 +23,7 @@ It's advantages are:
 	   to get wellwise summary statistics.
 	   It help you decide on whether your control treatments as well as test treatments have worked.
 	   You can also use your own hit-calling methods on it Final Wassertein Distance MAP well summary stats.
-
+```
 
 2) **[Image Analysis Steps](https://github.com/kazemSafari/cellpaint/blob/master/main.py)**
 	1) Preview (Check and decide how happy you are with your segmentation on a few wells!)
