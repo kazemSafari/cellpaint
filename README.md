@@ -7,6 +7,7 @@ using JUMP Consortium Protocol which has 5 channels (C1 / C2 / C3 / C4 / C5) as
 (nuclues / cytoplasm / nucleoli/ actin / mitochondria) painted with florescent dies
 (DAPI / Concanavalin A / Syto14 / WGA+Phalloidin / MitoTracker). 
 It's advantages are:
+
 1-1) It can help with Design of Experiment (AssayPlates can study the effects of multiple treatments/dosages/cell-lines/densities).
 
 1-2) Simple, easily tunable user-friendly interface for cellular segmentation (Check
@@ -17,19 +18,22 @@ It's advantages are:
     [cellpose](https://github.com/MouseLand/cellpose) and [pycleranto](https://github.com/clEsperanto/pyclesperanto_prototype)
 1-4) It then uses a novel method to match the segmentation of nucleus and cytoplasm, then
    uses the those two segmentation masks to segment the nucleoli and mitochondira as well.
+   
 1-5) Easy and simple interface to run
+
 1-6) Extremely fast, 10-100X faster than [Cellprofiler](https://github.com/CellProfiler/CellProfiler), using standard desktop and not using any cloud computing resources. It takes about 6-9 hours to analyse a full 384-well plate of 2000X2000 pixel images, which is about 17000 images. (It uses pytorch/GPU as well as CPU-Multiprocessing for speedup).
+
 1-7) It uses a torch-GPU implementation of the Wassertein Distance Map from each well from the DMSO condition,
    to get wellwise summary statistics.
    It help you decide on whether your control treatments as well as test treatments have worked.
    You can also use your own hit-calling methods on it Final Wassertein Distance MAP well summary stats.
 
 **[Image Analysis Steps](https://github.com/kazemSafari/cellpaint/blob/master/main.py)**
-	1) Preview (Check and decide how happy you are with your segmentation on a few wells!)
-	2) Segmentation Step 1 (Segmenting nucleus and cell)
-	3) Segmentation Step 2 (Matching nucleus and cell segmentation as well as segmenting nucleoli and mitchondria)
-	4) Light-weight Feature extraction: Shape, Intensity, and Texture Features
-	5) Calcultes the Wassertein-Distance Map of each biological-well from the DMSO/Vehicle condition.
+1) Preview (Check and decide how happy you are with your segmentation on a few wells!)
+2) Segmentation Step 1 (Segmenting nucleus and cell)
+3) Segmentation Step 2 (Matching nucleus and cell segmentation as well as segmenting nucleoli and mitchondria)
+4) Light-weight Feature extraction: Shape, Intensity, and Texture Features
+5) Calcultes the Wassertein-Distance Map of each biological-well from the DMSO/Vehicle condition.
 
 **Installation instructions**
 
