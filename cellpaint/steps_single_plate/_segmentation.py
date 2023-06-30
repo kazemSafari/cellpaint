@@ -84,7 +84,7 @@ class SegmentationPartI:
         img = load_img(img_channels_filepaths, self.args)
         exp_id, well_id, fov = img_filename_key[0], img_filename_key[1], img_filename_key[2]
 
-        if img.shape[0] < self.args.n_channels:
+        if len(img_channels_filepaths) < self.args.n_channels:
             w1_mask = np.zeros((self.args.height, self.args.width), dtype=np.uint16)
             w2_mask = np.zeros((self.args.height, self.args.width), dtype=np.uint16)
             print(f"{well_id}  {fov}  image does not have {self.args.n_channels} channels. Skipping segmentation!!!")
