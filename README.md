@@ -84,8 +84,10 @@ cmd.exe "/K" path_to_your_miniconda3\Scripts\activate.bat tensors
 ```
 Remember, you can only modify the program if you install it using Option 2).
 
+
 **Running Cellpaint**
-To learn how to use the program, go to [run_cellpaint.md]((https://github.com/kazemSafari/cellpaint/blob/master/run_cellpaint.md)).
+
+To learn how to use the program, go to [run_cellpaint.md](https://github.com/kazemSafari/cellpaint/blob/master/run_cellpaint.md).
 
 
 
