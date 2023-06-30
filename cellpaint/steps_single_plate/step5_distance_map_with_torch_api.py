@@ -179,6 +179,7 @@ class WellAggFeaturesDataset(TensorDataset):
             self.grp_col, sort=False).count().reset_index()
         self.cell_counts = self.cell_counts.rename(columns={self.meta_cols[0]: "cell-count"})["cell-count"]
         self.meta_data = pd.concat((self.meta_data, self.cell_counts), axis=1)
+        # print(self.meta_data[["well-id", "treatment", "dosage", "cell-count"]].head(10))
         self.transform = transform
 
     def __getitem__(self, grp_idx):
@@ -440,14 +441,49 @@ class WellAggFeatureDistanceMetrics:
         # # clip outlier feature values to -1 and 1
         # features[self.feat_cols] = features[self.feat_cols].clip(lower=-1, upper=1)
 
+    def my_sort_fn(self, x):
+        # print(type(x), x.shape)
+        # x is a series/row of the pandas dataframe
+        out = int(x["density"] == self.args.anchor_density) + \
+              int(x["cell-line"] == self.args.anchor_cellline) + \
+              int(x["treatment"] == self.args.anchor_treatment) + \
+              int(np.isin(x["treatment"], self.args.control_treatments))
+        return out
+
     def sort_rows_fn(self, df):
+        # custom order for each sheet from the platemap
+        densities = list(self.args.densities)
+        densities.insert(0, densities.pop(densities.index(self.args.anchor_density)))
+
+        celllines = list(self.args.celllines)
+        celllines.insert(0, celllines.pop(celllines.index(self.args.anchor_cellline)))
+
+        controls = list(self.args.control_treatments)
+        controls.insert(0, controls.pop(controls.index(self.args.anchor_treatment)))
+        treatments = controls + list(np.setdiff1d(self.args.treatments, self.args.control_treatments))
+
+        # dosages = list(self.args.dosages)
+        # dosages.insert(0, dosages.pop(dosages.index(self.args.anchor_dosage)))
+
+        sort_mapping_densities = {value: i for i, value in enumerate(densities)}
+        sort_mapping_celllines = {value: i for i, value in enumerate(celllines)}
+        sort_mapping_treatments = {value: i for i, value in enumerate(treatments)}
+        # sort_mapping_dosages = {value: i for i, value in enumerate(dosages)}
+
+        df['density_order'] = df['density'].map(sort_mapping_densities)
+        df['cell-line_order'] = df['cell-line'].map(sort_mapping_celllines)
+        df['treatment_order'] = df['treatment'].map(sort_mapping_treatments)
+        # df['dosage_order'] = df['dosage'].map(sort_mapping_dosages)
+
         df.sort_values(
-            by=["exp-id"], ascending=[True], ).sort_values(
-            by=["density"], ascending=[True], key=lambda x: x == self.args.anchor_density).sort_values(
-            by=["cell-line"], ascending=[True], key=lambda x: x == self.args.anchor_cellline).sort_values(
-            by=["treatment"], ascending=[True], key=lambda x: np.isin(x, self.args.control_treatments), ).sort_values(
-            by=["treatment"], ascending=[True], key=lambda x: x == self.args.anchor_treatment, ).sort_values(
-            by=["dosage", "well-id"], inplace=True)
+            ['density_order', 'cell-line_order', 'treatment_order'], inplace=True)
+        df.drop(
+            ['density_order', 'cell-line_order', 'treatment_order'], axis=1, inplace=True)
+
+        # grps = df.groupby("treatment", sort=False)
+        # for ii, (key, val) in enumerate(grps):
+        #     print(key)
+
         return df
 
     def get_well_based_feature_summary_distance_metrics(self, ):
@@ -513,9 +549,9 @@ class WellAggFeatureDistanceMetrics:
         # (both cell-line and treatment columns have to be strings!!!)
         features["treatment"] = features["treatment"].astype("str")
         features["cell-line"] = features["cell-line"].astype("str")
-        self.args.anchor_treatment = str(self.args.anchor_treatment)
-        self.args.anchor_cellline = str(self.args.anchor_cellline)
-        self.args.control_treatments = [str(it) for it in self.args.control_treatments]
+        # self.args.anchor_treatment = str(self.args.anchor_treatment)
+        # self.args.anchor_cellline = str(self.args.anchor_cellline)
+        # self.args.control_treatments = [str(it) for it in self.args.control_treatments]
         ##############################################################################################################
         # remove wells with not enough cells
         #########################################################################
