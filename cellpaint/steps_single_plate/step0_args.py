@@ -184,6 +184,9 @@ def load_img(img_path_group, args):
         returns:
         img: a numpy uint16 array of shape (5, height, width) containing the 5 image channels
     """
+    if len(img_path_group) < args.n_channels:
+        return np.zeros((args.n_channels, args.height, args.width), dtype=np.uint16)
+
     # read images from file
     w1_img = tifffile.imread(img_path_group[args.nucleus_idx])[np.newaxis]
     w2_img = tifffile.imread(img_path_group[args.cyto_idx])[np.newaxis]
@@ -215,6 +218,19 @@ def load_img(img_path_group, args):
 
     img = np.concatenate([w1_img, w2_img, w3_img, w4_img, w5_img], axis=0)
     return img
+
+
+def find_first_occurance(string_list, substring):
+    N = len(string_list)
+    for ii in range(N):
+        if substring in string_list[ii]:
+            return ii
+
+
+def unique_with_preservered_order(mylist):
+    a = np.array(mylist)
+    _, idx = np.unique(a, return_index=True)
+    return a[np.sort(idx)]
 
 
 class Args(object):
@@ -312,16 +328,16 @@ class Args(object):
         self.args.mode = mode
         self.args.experiment = experiment
         self.args.main_path = WindowsPath(main_path)
-        self.args.step2_segmentation_algorithm = step2_segmentation_algorithm
-        self.args.show_masks = True
+        self.args.analysis_part = analysis_part
+        # self.args.show_masks = True
         # Cellpaint Step 0) that can be tuned to the plate and image dimensions
         #######################################################################
-        self.args.analysis_part = analysis_part
         self.args.nucleus_idx = nucleus_idx
         self.args.cyto_idx = cyto_idx
         self.args.nucleoli_idx = nucleoli_idx
         self.args.actin_idx = actin_idx
         self.args.mito_idx = mito_idx
+        self.args.n_channels = len(organelles)
         self.args.n_fovs_per_well = n_fovs_per_well
         self.args.max_chars = max_chars
         #######################################################################
@@ -340,6 +356,7 @@ class Args(object):
             "w5": cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (w5_bg_rad, w5_bg_rad)),}
         ########################################################################
         # Cellpaint Step 2) that can be tuned to the plate and image dimensions
+        self.args.step2_segmentation_algorithm = step2_segmentation_algorithm
         self.args.cellpose_nucleus_diam = cellpose_nucleus_diam
         self.args.cellpose_cyto_diam = cellpose_cyto_diam
         self.args.cellpose_batch_size = cellpose_batch_size
