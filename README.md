@@ -8,9 +8,11 @@ using JUMP Consortium Protocol which has 5 channels (C1 / C2 / C3 / C4 / C5) as
 (DAPI / Concanavalin A / Syto14 / WGA+Phalloidin / MitoTracker). 
 It's advantages are:
 1-1) It can help with Design of Experiment (AssayPlates can study the effects of multiple treatments/dosages/cell-lines/densities).
+
 1-2) Simple, easily tunable user-friendly interface for cellular segmentation (Check
    the [preview.ipynb](https://github.com/kazemSafari/cellpaint/blob/master/preview.ipynb) notebook.
    It possible to make both the biologist and the programmer/analysist can both be happy!).
+   
 1-3) It has two GPU-backended options for the initial segmentation of the nucleus and cell:
     [cellpose](https://github.com/MouseLand/cellpose) and [pycleranto](https://github.com/clEsperanto/pyclesperanto_prototype)
 1-4) It then uses a novel method to match the segmentation of nucleus and cytoplasm, then
