@@ -1,83 +1,83 @@
 **Necessary Modifications Before running the program**
 
-	1) make sure the platemap excel file is filled-in properly,
-	and is in the same directory as your ```experiment_path``` which is the path to your images/experiment folder.
-	
-	2) Then modify the ```args``` python variable. 
-	The ```args``` variable is a namespace python object that holds all the user input/hyperparamter information. 
-	To learn more about its available keys/fields/options go to ```cellpaint/steps_single_plate/step0_args.py```
-	After making sure all the necessary adjustments are made to the ```args``` Namespace, and your also satisfied
-	with segmentation on a few images using ```preview.ipynb```.
-	Copy your own ```set_custom_datasets_hyperparameters``` into ```main.py```:
-	```
-	
-	def set_default_datasets_hyperparameters(args):
-		# default values for args based on the BCM/IBT perkim_elmer plate_protocol,
-		# for on 2000x2000 pixel dimenion images taken at 20X magnification.
-		...
-		return args
-	def set_custom_datasets_hyperparameters(args):
-	    # change the  value of each args.sth according to your plate and needs
-	    ##############################################################################
-	    # intensity rescaling hyperparameters
-	    args.w1_intensity_bounds = (5, 99.95)
-	    args.w2_intensity_bounds = (5, 99.95)
-	    args.w3_intensity_bounds = (5, 99.95)
-	    args.w4_intensity_bounds = (5, 99.95)
-	    args.w5_intensity_bounds = (5, 99.95)
-	    ##########################################################################
-	    # background correction hyperparameters
-	    # Set args.bg_sub to True first,
-	    # if you decide to do background subtraction.
-	    args.bg_sub = False
-	    args.w1_bg_rad = 50
-	    args.w2_bg_rad = 100
-	    args.w3_bg_rad = 50
-	    args.w4_bg_rad = 100
-	    args.w5_bg_rad = 100
-	    #######################################################################
-	    # image channels order/index 
-	    # defined during data acquisition set by the investigator/microscope
-	    args.nucleus_idx = 0
-	    args.cyto_idx = 1
-	    args.nucleoli_idx = 2
-	    args.actin_idx = 3
-	    args.mito_idx = 4
-	    #######################################################################
-	    # hyperparameters/constants used in Cellpaint Step 2
-	    #options for args.step2_segmentation_algorithm are:
-	        # 1) "w1=cellpose_w2=cellpose"
-	        # 2) "w1=pycle_w2=pycle"
-	        # 3) "w1=cellpose_w2=pycle"
-	        # 4) "w1=pycle_w2=cellpose"
-	    args.step2_segmentation_algorithm = "w1=cellpose_w2=cellpose"
-	    args.cellpose_nucleus_diam = 100
-	    args.cellpose_cyto_diam = 100
-	    args.cellpose_batch_size = 64
-	    args.cellpose_model_type = "cyto2"
-	    # define the minimum size of segmented objects in each channel
-	    args.w1_min_size = 600
-	    args.w2_min_size = 700
-	    args.w3_min_size = 40
-	    args.w5_min_size = 200
-	    #######################################################
-	    # hyperparameters/constants used in Cellpaint Step 3
-	    ############################################
-	    # args.multi_nucleus_dist_thresh decides 
-	    # whether to break down a multi-nucleus cyto mask,
-	    # into individual cyto masks,
-	    # based on avg-pairwise distance of all the nucleus
-	    # inside that cytoplasm
-	    args.multi_nucleus_dist_thresh = 40
-	    #######################################
-	    args.min_nucleoli_size_multiplier = .005
-	    args.max_nucleoli_size_multiplier = .3
-	    args.nucleoli_bd_area_to_nucleoli_area_threshold = .2
-	    args.w3_local_rescale_intensity_ub = 99.2
-	    args.w5_local_rescale_intensity_ub = 99.9
-	    return args
-	```
-	3) Modify ```main.py``` by setting in your own ```experiment_path```, ```experiment_folder```.
+1) make sure the platemap excel file is filled-in properly,
+and is in the same directory as your ```experiment_path``` which is the path to your images/experiment folder.
+
+2) Then modify the ```args``` python variable. 
+The ```args``` variable is a namespace python object that holds all the user input/hyperparamter information. 
+To learn more about its available keys/fields/options go to ```cellpaint/steps_single_plate/step0_args.py```
+After making sure all the necessary adjustments are made to the ```args``` Namespace, and your also satisfied
+with segmentation on a few images using ```preview.ipynb```.
+Copy your own ```set_custom_datasets_hyperparameters``` into ```main.py```:
+```
+
+def set_default_datasets_hyperparameters(args):
+	# default values for args based on the BCM/IBT perkim_elmer plate_protocol,
+	# for on 2000x2000 pixel dimenion images taken at 20X magnification.
+	...
+	return args
+def set_custom_datasets_hyperparameters(args):
+    # change the  value of each args.sth according to your plate and needs
+    ##############################################################################
+    # intensity rescaling hyperparameters
+    args.w1_intensity_bounds = (5, 99.95)
+    args.w2_intensity_bounds = (5, 99.95)
+    args.w3_intensity_bounds = (5, 99.95)
+    args.w4_intensity_bounds = (5, 99.95)
+    args.w5_intensity_bounds = (5, 99.95)
+    ##########################################################################
+    # background correction hyperparameters
+    # Set args.bg_sub to True first,
+    # if you decide to do background subtraction.
+    args.bg_sub = False
+    args.w1_bg_rad = 50
+    args.w2_bg_rad = 100
+    args.w3_bg_rad = 50
+    args.w4_bg_rad = 100
+    args.w5_bg_rad = 100
+    #######################################################################
+    # image channels order/index 
+    # defined during data acquisition set by the investigator/microscope
+    args.nucleus_idx = 0
+    args.cyto_idx = 1
+    args.nucleoli_idx = 2
+    args.actin_idx = 3
+    args.mito_idx = 4
+    #######################################################################
+    # hyperparameters/constants used in Cellpaint Step 2
+    #options for args.step2_segmentation_algorithm are:
+	# 1) "w1=cellpose_w2=cellpose"
+	# 2) "w1=pycle_w2=pycle"
+	# 3) "w1=cellpose_w2=pycle"
+	# 4) "w1=pycle_w2=cellpose"
+    args.step2_segmentation_algorithm = "w1=cellpose_w2=cellpose"
+    args.cellpose_nucleus_diam = 100
+    args.cellpose_cyto_diam = 100
+    args.cellpose_batch_size = 64
+    args.cellpose_model_type = "cyto2"
+    # define the minimum size of segmented objects in each channel
+    args.w1_min_size = 600
+    args.w2_min_size = 700
+    args.w3_min_size = 40
+    args.w5_min_size = 200
+    #######################################################
+    # hyperparameters/constants used in Cellpaint Step 3
+    ############################################
+    # args.multi_nucleus_dist_thresh decides 
+    # whether to break down a multi-nucleus cyto mask,
+    # into individual cyto masks,
+    # based on avg-pairwise distance of all the nucleus
+    # inside that cytoplasm
+    args.multi_nucleus_dist_thresh = 40
+    #######################################
+    args.min_nucleoli_size_multiplier = .005
+    args.max_nucleoli_size_multiplier = .3
+    args.nucleoli_bd_area_to_nucleoli_area_threshold = .2
+    args.w3_local_rescale_intensity_ub = 99.2
+    args.w5_local_rescale_intensity_ub = 99.9
+    return args
+```
+3) Modify ```main.py``` by setting in your own ```experiment_path```, ```experiment_folder```.
 
 
 **Running the program**
