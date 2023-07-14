@@ -78,6 +78,7 @@ conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvi
    	one to edit the program.
    
 All the required packages will be installed automatically from ```setup.py``` file! Done!
+
 In case you are using a linux machine, you need to change all ```WindowsPath``` objects
 In the code to ```PosixPath``` object.
 
