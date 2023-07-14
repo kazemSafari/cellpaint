@@ -85,7 +85,8 @@ if the pycharm terminal does not recognize your anaconda virtualenv, do the foll
 Go to ```File -> Settings -> Tools -> Terminal```. Replace the value in ``Shell path`` with 
 ```cmd.exe "/K" path_to_your_miniconda3\Scripts\activate.bat tensors```.
 
-Remember, you are able to modify this package only if you install it via Option 2).
+Remember, you will be able to modify the content of this package 
+only if you install it via Option 2).
 
 
 **Running Cellpaint**
