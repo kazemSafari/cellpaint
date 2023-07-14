@@ -23,8 +23,10 @@ It's advantages are:
    
 5) Easy and simple interface to run
 
-6) Extremely fast, 10-100X faster than [Cellprofiler](https://github.com/CellProfiler/CellProfiler), using standard desktop and not using any cloud computing resources.
-   It takes about 6-9 hours to analyse a full 384-well plate of 2000X2000 pixel images, which is about 17000 images. (It uses pytorch/GPU as well as CPU-Multiprocessing for speedup).
+6) Extremely fast, 10-100X faster than [Cellprofiler](https://github.com/CellProfiler/CellProfiler),
+   using standard desktop and not using any cloud computing resources.
+   It takes about 6-9 hours to analyse a full 384-well plate of ```2000X2000``` pixel images, which is about 17000 images.
+   (It uses pytorch/GPU as well as CPU-Multiprocessing for speedup).
 
 8) It uses a torch-GPU implementation of the Wassertein Distance Map from each well from the DMSO condition,
    to get wellwise summary statistics.
@@ -81,8 +83,8 @@ virtualenv. Here is the fix from
 if the pycharm terminal does not recognize your anaconda virtualenv, do the following:
 
 Go to ```File -> Settings -> Tools -> Terminal```. Replace the value in ``Shell path`` with
-```cmd.exe "/K" path_to_your_miniconda3\Scripts\activate.bat tensors```
-Remember, you can only modify the program if you install it using Option 2).
+```cmd.exe "/K" path_to_your_miniconda3\Scripts\activate.bat tensors``` Remember, 
+you can only modify the program if you install it using Option 2).
 
 
 **Running Cellpaint**
