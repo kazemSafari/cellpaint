@@ -54,14 +54,14 @@ pip uninstall torch
 conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
 ```
 7)
-	Option 1)
+	**Option 1)**
 	
  	To install cellpaint directry from github:
 	```
 	pip install git+https://github.com/kazemSafari/cellpaint.git
 	```
 	
-	Option 2)
+	**Option 2)**
 	
  	To install cellpaint locally in your computer and in oder to be able to change it, 
 	first download it from github to your computer,
