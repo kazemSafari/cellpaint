@@ -23,9 +23,10 @@ It's advantages are:
    
 5) Easy and simple interface to run
 
-6) Extremely fast, 10-100X faster than [Cellprofiler](https://github.com/CellProfiler/CellProfiler), using standard desktop and not using any cloud computing resources. It takes about 6-9 hours to analyse a full 384-well plate of 2000X2000 pixel images, which is about 17000 images. (It uses pytorch/GPU as well as CPU-Multiprocessing for speedup).
+6) Extremely fast, 10-100X faster than [Cellprofiler](https://github.com/CellProfiler/CellProfiler), using standard desktop and not using any cloud computing resources.
+   It takes about 6-9 hours to analyse a full 384-well plate of 2000X2000 pixel images, which is about 17000 images. (It uses pytorch/GPU as well as CPU-Multiprocessing for speedup).
 
-7) It uses a torch-GPU implementation of the Wassertein Distance Map from each well from the DMSO condition,
+8) It uses a torch-GPU implementation of the Wassertein Distance Map from each well from the DMSO condition,
    to get wellwise summary statistics.
    It help you decide on whether your control treatments as well as test treatments have worked.
    You can also use your own hit-calling methods on it Final Wassertein Distance MAP well summary stats.
@@ -70,18 +71,17 @@ conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvi
 	type ```pip install -e cellpaint``` in the same terminal. The ```-e``` allows
    	one to edit the program.
    
-All the required packages will be installed automatically from setup.py file! Done!
-In case you are using a linux machine, you need to change all WindowsPath objects
-In the code to PosixPath object.
+All the required packages will be installed automatically from ```setup.py``` file! Done!
+In case you are using a linux machine, you need to change all ```WindowsPath``` objects
+In the code to ```PosixPath``` object.
 
 Also if you are going to use Pycharm, its terminal might not recognize your anaconda3
 virtualenv. Here is the fix from 
-```https://stackoverflow.com/questions/48924787/pycharm-terminal-doesnt-activate-conda-environment```:
-If the pycharm terminal does not recognize your anaconda virtualenv, do the following:
+```https://stackoverflow.com/questions/48924787/pycharm-terminal-doesnt-activate-conda-environment```, 
+if the pycharm terminal does not recognize your anaconda virtualenv, do the following:
+
 Go to ```File -> Settings -> Tools -> Terminal```. Replace the value in ``Shell path`` with
-```
-cmd.exe "/K" path_to_your_miniconda3\Scripts\activate.bat tensors
-```
+```cmd.exe "/K" path_to_your_miniconda3\Scripts\activate.bat tensors```
 Remember, you can only modify the program if you install it using Option 2).
 
 
